@@ -36,13 +36,29 @@ df['hr'] = [handle_missing(i.find('{http://www.topografix.com/GPX/1/1}extensions
 # %%
 from shapely.geometry import LineString, Point
 
+def calc_azimuth(line):
+    xs = line.coords.xy[0]
+    ys = line.coords.xy[1]
+    azimuth = np.arctan2(xs[0]-xs[1], ys[0]-ys[1])
+    return azimuth
+
+def get_intecept_angle(line1, line2):
+    azi1 = calc_azimuth(line1)
+    azi2 = calc_azimuth(line2)
+    angle = np.rad2deg(azi2-azi1)
+    return angle
 
 def check_intersept(seg, gate):
+    angle = np.NAN
     line_gate = LineString([gate['left'], gate['right']])
     line_gpx  = LineString([seg.iloc[0][['lon', 'lat']].values, seg.iloc[1][['lon', 'lat']].values])
     int_pt = line_gpx.intersection(line_gate)
+    if int_pt:
+        angle = get_intecept_angle(line_gpx, line_gate)
+        if angle < 0 or angle > 180:
+            int_pt = False
     #return int_pt.x, int_pt.y
-    return int_pt
+    return int_pt, angle
 
 def get_intersection_time(point, seg):
     seg_diff = seg.diff().iloc[1]
@@ -60,7 +76,7 @@ for seg in df.rolling(window=2, min_periods=2):
         continue
 
     for idx, gate in enumerate(course['course']):
-        point = check_intersept(seg, gate)
+        (point, angle) = check_intersept(seg, gate)
         # Get time
         if point:
             intersection_time = get_intersection_time(point, seg)
@@ -68,7 +84,8 @@ for seg in df.rolling(window=2, min_periods=2):
             splits.append({
                 "gate": gate["name"],
                 "epoch": intersection_time,
-                "idx": idx
+                "idx": idx,
+                "angle": angle
             })
 
 splits = pd.DataFrame(splits)
