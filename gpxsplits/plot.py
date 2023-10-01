@@ -1,4 +1,5 @@
 import plotly.graph_objects as go
+import plotly.express as px
 
 def draw_course(course, gpx_df=None):
     fig = go.Figure()
@@ -33,3 +34,9 @@ def draw_course(course, gpx_df=None):
         })
     
     return fig
+
+
+def visualise_normalised_splits(course, norm_splits):
+    vis_df = norm_splits.reset_index().melt(id_vars='lap')
+    fig = px.line(vis_df, x='gate', y='value', color='lap',
+            title=f"{course['name']} Normalised Splits")

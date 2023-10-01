@@ -103,6 +103,29 @@ splits['elapsed'] = elapsed['epoch']
 splits2 = splits.pivot(columns='gate', index='lap', values='elapsed')
 splits2 = splits2[[g['name'] for g in course['course']]]
 
+# %% Normalise splits
+import plotly.express as px
+
+avg_split_time = splits2.dropna().mean()
+
+# splits3 = splits2.diff(axis=1).fillna(pd.Timedelta(0)) + avg_split_time
+# vis_df = splits3.reset_index().melt(id_vars='lap')
+
+norm_splits = []
+laps = []
+for lap, split in splits2.iterrows():
+    offset_time = avg_split_time[~split.isna().values][0]
+    norm_split = split + offset_time - avg_split_time
+    norm_splits.append(norm_split.dt.total_seconds())
+    laps.append(lap)
+
+norm_splits = pd.DataFrame(norm_splits)
+norm_splits.index = laps
+norm_splits.index.name = 'lap'
+
+vis_df = norm_splits.reset_index().melt(id_vars='lap')
+px.line(vis_df, x='gate', y='value', color='lap')
+
 # %% Visualise Course
 
 import plotly.graph_objects as go

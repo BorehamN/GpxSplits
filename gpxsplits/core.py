@@ -105,4 +105,16 @@ def gate_times_to_splits(course, gate_times):
     splits2 = splits2[[g['name'] for g in course['course']]]
 
 def normalise_splits(splits):
-    raise NotImplementedError
+    avg_split_time = splits.dropna().mean()
+
+    norm_splits = []
+    laps = []
+    for lap, split in splits.iterrows():
+        offset_time = avg_split_time[~split.isna().values][0]
+        norm_split = split + offset_time - avg_split_time
+        norm_splits.append(norm_split.dt.total_seconds())
+        laps.append(lap)
+
+    norm_splits = pd.DataFrame(norm_splits)
+    norm_splits.index = laps
+    norm_splits.index.name = 'lap'
