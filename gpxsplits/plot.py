@@ -36,7 +36,14 @@ def draw_course(course, gpx_df=None):
     return fig
 
 
-def visualise_normalised_splits(course, norm_splits):
-    vis_df = norm_splits.reset_index().melt(id_vars='lap')
-    fig = px.line(vis_df, x='gate', y='value', color='lap',
-            title=f"{course['name']} Normalised Splits")
+def visualise_splits(course, splits, normalised=False):
+    if normalised:
+        title = f"{course['name']} Normalised Splits"
+    else:
+        title = f"{course['name']} Splits"
+
+    vis_df = splits.reset_index().melt(id_vars=['lap'], value_name='Seconds')
+    fig = px.line(vis_df, x='gate', y='Seconds', color='lap',
+            title=title)
+    
+    return fig
