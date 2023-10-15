@@ -15,6 +15,7 @@ setup(
     entry_points={
         'console_scripts': [
             'gpxsplits = gpxsplits.main:gpxsplits',
+            'gpxtocsv = gpxsplits.main:gpxtocsv',
         ],
     },
 )

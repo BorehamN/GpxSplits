@@ -18,6 +18,7 @@ def gpxsplits(output, coursefile, filepaths):
 
     all_split_times = []
     for gpx_file in filepaths:
+        print(gpx_file)
         gpx_file_name, ext = os.path.splitext(os.path.basename(gpx_file))
         gpx_data = core.import_gpx(gpx_file)
         gate_times = core.find_gate_times(course, gpx_data)
@@ -33,3 +34,17 @@ def gpxsplits(output, coursefile, filepaths):
     norm_splits.to_csv(output + '_normalised_splits.csv')
     fig = plot.visualise_splits(course, norm_splits, normalised=True)
     fig.write_html(output + '_normalised_splits.html')
+
+
+@click.command()
+@click.argument('filepaths', nargs=-1)
+def gpxtocsv(filepaths):
+    """Help String"""
+    filepaths = [j for i in filepaths for j in glob.glob(i)]
+
+    for gpx_file in filepaths:
+        print(gpx_file)
+        path, ext = os.path.splitext(gpx_file)
+        csv_file = path + '.csv'
+        gpx_data = core.import_gpx(gpx_file)
+        gpx_data.to_csv(csv_file, index=False)
