@@ -111,19 +111,30 @@ def gate_times_to_splits(id_str, course, gate_times):
     gate_times['elapsed'] = elapsed['epoch']
 
     splits2 = gate_times.pivot(columns='gate', index='lap', values='elapsed')
+    
+    for gate in course['course']:
+        if gate['name'] not in splits2.columns:
+            splits2[gate['name']] = np.NaN
+
     splits2 = splits2[[g['name'] for g in course['course']]]
     splits2 = splits2.apply(lambda x: to_total_seconds(x))
     return splits2
 
-def normalise_splits(splits):
+def normalise_splits(course, splits):
     avg_split_time = splits.dropna().mean()
+
+    for gate in course['course']:
+        if gate['name'] not in avg_split_time.index:
+            avg_split_time[gate['name']] = np.NaN
+
+    avg_split_time = avg_split_time[[g['name'] for g in course['course']]]
+
 
     norm_splits = []
     laps = []
     for lap, split in splits.iterrows():
         offset_time = avg_split_time[~split.isna().values][0]
         norm_split = split + offset_time - avg_split_time
-        #norm_splits.append(norm_split.dt.total_seconds())
         norm_splits.append(norm_split)
         laps.append(lap)
 

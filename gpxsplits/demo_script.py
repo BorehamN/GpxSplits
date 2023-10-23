@@ -4,7 +4,8 @@ import pandas as pd
 import numpy as np
 import json
 
-gpx_file_path = r"C:\Users\nickb\Documents\GpxSplits\GpxSplits\data\Lipno_practice_1.gpx"
+gpx_file_path = r"c:\Users\nickb\Documents\GpxSplits\Jacob_Lipno_World_Cup_3_.gpx"
+#gpx_file_path = r"C:\Users\nickb\Documents\GpxSplits\GpxSplits\data\Lipno_practice_2.gpx"
 course_file = r"C:\Users\nickb\Documents\GpxSplits\GpxSplits\data\Lipno_splits.json"
 
 with open(course_file) as fp:
@@ -94,6 +95,12 @@ splits = pd.DataFrame(splits)
 # Order splits by time
 # Count number of intercepts for each gate
 
+def to_total_seconds(x):
+    try:
+        return x.dt.total_seconds()
+    except:
+        return x
+
 splits['lap'] = (splits['idx'].diff() < 1).cumsum() + 1
 
 elapsed = splits[['lap', 'epoch']].groupby('lap').apply(lambda x: x - x.iloc[0])
@@ -101,12 +108,25 @@ elapsed = splits[['lap', 'epoch']].groupby('lap').apply(lambda x: x - x.iloc[0])
 splits['elapsed'] = elapsed['epoch']
 
 splits2 = splits.pivot(columns='gate', index='lap', values='elapsed')
+
+for gate in course['course']:
+    if gate['name'] not in splits2.columns:
+        splits2[gate['name']] = np.NaN
+
 splits2 = splits2[[g['name'] for g in course['course']]]
+splits2 = splits2.apply(lambda x: to_total_seconds(x))
 
 # %% Normalise splits
 import plotly.express as px
 
 avg_split_time = splits2.dropna().mean()
+for gate in course['course']:
+    if gate['name'] not in avg_split_time.index:
+        avg_split_time[gate['name']] = np.NaN
+
+avg_split_time = avg_split_time[[g['name'] for g in course['course']]]
+
+# %%
 
 # splits3 = splits2.diff(axis=1).fillna(pd.Timedelta(0)) + avg_split_time
 # vis_df = splits3.reset_index().melt(id_vars='lap')
@@ -116,7 +136,7 @@ laps = []
 for lap, split in splits2.iterrows():
     offset_time = avg_split_time[~split.isna().values][0]
     norm_split = split + offset_time - avg_split_time
-    norm_splits.append(norm_split.dt.total_seconds())
+    norm_splits.append(norm_split)
     laps.append(lap)
 
 norm_splits = pd.DataFrame(norm_splits)

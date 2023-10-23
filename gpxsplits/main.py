@@ -12,7 +12,7 @@ from . import plot
 @click.argument('coursefile', nargs=1)
 @click.argument('filepaths', nargs=-1)
 def gpxsplits(output, coursefile, filepaths):
-    "Help String"
+    "Creates the split times for a given course given"
     course = core.import_course(coursefile)
     filepaths = [j for i in filepaths for j in glob.glob(i)]
 
@@ -30,7 +30,7 @@ def gpxsplits(output, coursefile, filepaths):
     fig = plot.visualise_splits(course, splits)
     fig.write_html(output + '_splits.html')
 
-    norm_splits = core.normalise_splits(splits)
+    norm_splits = core.normalise_splits(course, splits)
     norm_splits.to_csv(output + '_normalised_splits.csv')
     fig = plot.visualise_splits(course, norm_splits, normalised=True)
     fig.write_html(output + '_normalised_splits.html')
@@ -39,7 +39,13 @@ def gpxsplits(output, coursefile, filepaths):
 @click.command()
 @click.argument('filepaths', nargs=-1)
 def gpxtocsv(filepaths):
-    """Help String"""
+    """Converts a gpx file(s) (from strava) into a csv file for further analysis.
+    The user can input multiple GPX files at once and unix wild card characters
+    can be used within the path.
+    
+    EXAMPLE:
+    > gpxtocsv *.gpx
+    """
     filepaths = [j for i in filepaths for j in glob.glob(i)]
 
     for gpx_file in filepaths:
