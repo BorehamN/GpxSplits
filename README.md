@@ -106,7 +106,16 @@ Again mulitple files or unix wildcard characters can be used to convert multiple
 
 `gpxtocsv *.gpx`
 
-## How to Download a GPX file from Strava 
+## How to Download a GPX file from Strava
+
+The (GPX file format)[https://en.wikipedia.org/wiki/GPS_Exchange_Format] is a standard open format that can be downloaded from most GPS/GNSS devices. However here we will only cover how to download it from (Strava)[https://www.strava.com] as this is commonly used my most sport enthusiasts.
+
+Unfortunately you can only download the GPX file of your own past Strava activities from the desktop site.
+
+1. Login to https://www.strava.com
+2. Navigate to the activity you wish to download (a list of your past activities can be found here https://www.strava.com/athlete/training)
+3. Download the GPX file using either the button on the interactive map or by using the `Export GPX` button under the options (three dots `...`) menu.
+4. Rename and move the file to an appropriate location. `gpxsplits` will use this filename to identify split times from this GPX file.
 
 ## Improvements
 
