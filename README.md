@@ -1,6 +1,8 @@
 # GpxSplits
 
-This is Python package/command line tool for for getting split times from GPX files. It also creates some visualisations of the split times.
+This is Python package/command line tool for for getting split times from GPX files. It also creates some visualizations of the split times.
+
+This is intended as a training tool and to help analyze personal performance. Accuracy of the generated split times will be dependent on the accuracy of the GPX file(s) and may not be suitable for race timing.
 
 ## Installation
 
@@ -57,6 +59,34 @@ Alternatively the unix wild card characters can be used to select multiple files
 `gpxsplits mySplits Lipno_splits.json *.gpx`
 
 ## The Course File
+
+The course file follows the (JSON Format)[https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON].
+
+The course file must have a `name` field which is a string specifying the name of the course and a `course` field which contains a list of gates.
+
+Gates are JSON objects which must contain a unique `name` field. The `left` and `right` fields of the gate specify the points of left and right hand sides of the gate. These points should be given as a list specifying longitude then latitude *i.e* `[longitude, latitude]`. All longitude and latitude values should be given in degrees with reference to the WGS84 datum.
+
+Gates are one-way only so care should be given to ensure they are specified the correct way round. The left and the right hand sides of the gate are defined relative to the direction of travel of the GPS receiver. Therefore as you approach a gate, the left hand point of the gate should be on your left, and the right hand gate to your right. If this is reversed the split time will not be recorded.
+
+An example course file is shown bellow, or you can refer to `./data/Lipno_splits.json`. Currently course files must be made by hand using a plain text editor, but I would like to make a tool to do this in the future.
+
+```
+{
+    "name": "Demo Course FIle",
+    "course": [
+        {
+            "name": "Example Gate 1",
+            "left":  [<longitude degrees>, <latitude degrees>],
+            "right": [<longitude degrees>, <latitude degrees>]
+        },
+        {
+            "name": "Example Gate 2",
+            "left":  [14.243294097546908, 48.621806226585164],
+            "right": [14.242755885244975, 48.621867754696126]
+        }
+    ]
+}
+```
 
 ## GPX to CSV
 
