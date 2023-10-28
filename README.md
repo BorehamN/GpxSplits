@@ -60,7 +60,7 @@ Alternatively the unix wild card characters can be used to select multiple files
 
 ## The Course File
 
-The course file follows the (JSON Format)[https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON].
+The course file follows the [JSON Format](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON).
 
 The course file must have a `name` field which is a string specifying the name of the course and a `course` field which contains a list of gates.
 
@@ -108,7 +108,7 @@ Again mulitple files or unix wildcard characters can be used to convert multiple
 
 ## How to Download a GPX file from Strava
 
-The (GPX file format)[https://en.wikipedia.org/wiki/GPS_Exchange_Format] is a standard open format that can be downloaded from most GPS/GNSS devices. However here we will only cover how to download it from (Strava)[https://www.strava.com] as this is commonly used my most sport enthusiasts.
+The [GPX file format](https://en.wikipedia.org/wiki/GPS_Exchange_Format) is a standard open format that can be downloaded from most GPS/GNSS devices. However here we will only cover how to download it from [Strava](https://www.strava.com) as this is commonly used my most sport enthusiasts.
 
 Unfortunately you can only download the GPX file of your own past Strava activities from the desktop site.
 
